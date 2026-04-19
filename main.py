@@ -1,12 +1,28 @@
-print("程序启动了")
+import json
+import sys
 from llm import process_news_with_llm
 from daily_ai_news import collect_news, send_to_wechat
 from formatter import format_news_message_v2
-import json
 from rich import print
+from fetch_news import main_with_topic
+
+def get_topic_from_args():
+    """从命令行参数获取主题，若无参数则提示输入或使用默认值"""
+    if len(sys.argv) > 1:
+        return sys.argv[1].strip()
+    else:
+        # 可选：交互输入
+        topic = input("请输入您感兴趣的领域（例如：人工智能、量子计算）: ").strip()
+        if not topic:
+            topic = "人工智能"   # 默认主题
+        return topic
 
 def main():
-    news = collect_news()
+    topic = get_topic_from_args()
+    print(f"[green]正在为主题「{topic}」收集资讯...[/green]")
+
+    # news = collect_news()
+    news = main_with_topic(topic)
 
     print(f"[yellow]原始新闻数量: {len(news)}[/yellow]")
 
